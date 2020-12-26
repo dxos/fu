@@ -1,11 +1,11 @@
 # File Utils
 
 ```
-npx fu help
+npx @dxos/fu help
 ```
 
 ## Count lines of code
 
 ```
-npx @dxos/fu loc --dir=./src
+npx @dxos/fu loc --dir=./src --verbose
 ```

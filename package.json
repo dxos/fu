@@ -1,9 +1,9 @@
 {
   "name": "@dxos/fu",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.1",
   "description": "File utils.",
   "bin": {
-    "code": "bin/fu.js"
+    "fu": "bin/fu.js"
   },
   "files": [
     "dist"
