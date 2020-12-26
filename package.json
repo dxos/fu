@@ -1,0 +1,69 @@
+{
+  "name": "@dxos/fu",
+  "version": "1.0.0-alpha.0",
+  "description": "File utils.",
+  "bin": {
+    "code": "bin/fu.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/es/index.js",
+  "types": "dist/es/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "yarn run build --watch",
+    "clean": "rm -rf dist",
+    "coverage": "npm test -- --coverage",
+    "coveralls": "npm run coverage && cat ./coverage/lcov.info | coveralls",
+    "fu": "npx ts-node src/index.ts",
+    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts yarn npm codeload.github.com --validate-https",
+    "prepublishOnly": "npm run test && npm run build",
+    "test": "jest --verbose --passWithNoTests",
+    "posttest": "npm run lint"
+  },
+  "license": "AGPL-3.0",
+  "jest": {
+    "preset": "ts-jest/presets/js-with-ts",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "dist"
+    ]
+  },
+  "dependencies": {
+    "readline": "^1.3.0",
+    "strip-comments": "^2.0.1",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "@types/strip-comments": "^2.0.0",
+    "@types/yargs": "^15.0.12",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "coveralls": "^3.0.7",
+    "jest": "^26.4.2",
+    "lockfile-lint": "^4.3.7",
+    "semistandard": "^14.2.0",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.9.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "eslint-config-semistandard",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "no-useless-constructor": "off",
+      "no-undef": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+  }
+}
