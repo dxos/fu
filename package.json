@@ -59,9 +59,13 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
+      "no-unused-expressions": "off",
       "no-unused-vars": "off",
       "no-useless-constructor": "off",
+      "no-useless-escape": "off",
       "no-undef": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-explicit-any": "off"
     }

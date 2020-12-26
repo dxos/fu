@@ -10,9 +10,10 @@ import util from 'util';
 import { replace } from './replace';
 import { walk } from './walk';
 
-const { hideBin } = require('yargs/helpers');
+// @ts-ignore
+import { hideBin } from 'yargs/helpers';
 
-// TODO(burdon): Parse .gitignore.
+// TODO(burdon): Parse .gitignore
 
 yargs(hideBin(process.argv))
   .option('verbose', {

@@ -1,4 +1,4 @@
-# File Util
+# File Utils
 
 ```
 npx fu help
