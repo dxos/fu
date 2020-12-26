@@ -9,7 +9,7 @@ import strip from 'strip-comments';
 
 export const replace = async (input: string, output?: string): Promise<{ lines: number }> => {
   let lines = 0;
-  let skipped = 0;
+  let blank = 0;
 
   return new Promise(resolve => {
     const reader = readline.createInterface({
@@ -19,17 +19,21 @@ export const replace = async (input: string, output?: string): Promise<{ lines: 
     const writer = output && fs.createWriteStream(output);
 
     reader.on('line', (line) => {
-      const out = strip(line);
-      if (!out.length) {
-        skipped++;
+      if (line.trim().length === 0) {
+        blank++;
       }
 
-      if (out.length) {
-        if (skipped) {
+      const out = strip(line);
+      if (out.trim().length) {
+        //
+        // Preserve single blank lines (unless start of file).
+        //
+        if (blank) {
           if (lines) {
             writer && writer.write(os.EOL);
           }
-          skipped = 0;
+
+          blank = 0;
         }
 
         writer && writer.write(out + os.EOL);

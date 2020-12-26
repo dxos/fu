@@ -13,7 +13,8 @@ import { walk } from './walk';
 // @ts-ignore
 import { hideBin } from 'yargs/helpers';
 
-// TODO(burdon): Parse .gitignore
+// TODO(burdon): File prefix.
+// TODO(burdon): Parse .gitignore.
 
 yargs(hideBin(process.argv))
   .option('verbose', {
