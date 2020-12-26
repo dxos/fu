@@ -19,20 +19,20 @@ yargs(hideBin(process.argv))
   .option('verbose', {
     alias: 'v',
     type: 'boolean',
-    description: 'Verbose logging.'
+    description: 'Verbose logging'
   })
   .option('dir', {
     type: 'string',
-    description: 'Root directory.'
+    description: 'Root directory'
   })
   .option('dryRun', {
     type: 'boolean',
-    description: 'Test run.'
+    description: 'Test run'
   })
   .option('extensions', {
     alias: 'ext',
     type: 'string',
-    description: 'File extensions.'
+    description: 'File extensions'
   })
 
   // loc
