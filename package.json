@@ -20,7 +20,7 @@
     "lint": "eslint 'src/**/*.{js,ts}'",
     "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts yarn npm codeload.github.com --validate-https",
     "prepublishOnly": "npm run test && npm run build",
-    "test": "jest --verbose --passWithNoTests",
+    "test": "jest --rootDir=./src --verbose --passWithNoTests",
     "posttest": "npm run lint"
   },
   "license": "AGPL-3.0",

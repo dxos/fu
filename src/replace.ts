@@ -2,48 +2,39 @@
 // Copyright 2020 DXOS.org
 //
 
-import fs from 'fs';
+import fs, { WriteStream } from 'fs';
 import os from 'os';
-import readline from 'readline';
 import strip from 'strip-comments';
 
-export const replace = async (input: string, output?: string): Promise<{ lines: number }> => {
-  let lines = 0;
-  let blank = 0;
-
+export const replace = async (path: string, writer?: WriteStream): Promise<{ lines: number }> => {
   return new Promise(resolve => {
-    const reader = readline.createInterface({
-      input: fs.createReadStream(input)
-    });
+    const data = fs.readFileSync(path, 'utf8');
 
-    const writer = output && fs.createWriteStream(output);
+    let count = 0;
+    let blank = 0;
 
-    reader.on('line', (line) => {
+    // https://www.npmjs.com/package/strip-comments
+    const lines = strip(data).split(os.EOL).map(line => {
       if (line.trim().length === 0) {
         blank++;
-      }
+      } else {
+        count++;
 
-      const out = strip(line);
-      if (out.trim().length) {
-        //
-        // Preserve single blank lines (unless start of file).
-        //
+        // Compress multiple blank lines into one.
+        // NOTE: This may cause a lint error if the first method of a class has a comment.
         if (blank) {
-          if (lines) {
-            writer && writer.write(os.EOL);
-          }
-
           blank = 0;
+          if (count > 1) {
+            return os.EOL + line;
+          }
         }
 
-        writer && writer.write(out + os.EOL);
-        lines++;
+        return line;
       }
-    });
+    }).filter(Boolean);
 
-    reader.on('close', () => {
-      writer && writer.close();
-      resolve({ lines });
-    });
+    writer && writer.write(lines.join(os.EOL) + os.EOL);
+
+    resolve({ lines: lines.length });
   });
 };
