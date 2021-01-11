@@ -1,7 +1,8 @@
 {
   "name": "@dxos/fu",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "File utils.",
+  "license": "AGPL-3.0",
   "bin": {
     "fu": "bin/fu.js"
   },
@@ -23,7 +24,6 @@
     "test": "jest --rootDir=./src --verbose --passWithNoTests",
     "posttest": "npm run lint"
   },
-  "license": "AGPL-3.0",
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
     "testEnvironment": "node",

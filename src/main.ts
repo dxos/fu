@@ -2,17 +2,28 @@
 // Copyright 2020 DXOS.org
 //
 
-import fs, { WriteStream } from 'fs';
+import fs from 'fs';
 import path from 'path';
-import yargs from 'yargs';
 import util from 'util';
+import yargs from 'yargs';
 
-import { replace } from './replace';
+import { strip } from './strip';
 import { walk } from './walk';
 import os from 'os';
 
 // TODO(burdon): File prefix.
 // TODO(burdon): Parse .gitignore.
+
+const mapRelative = (file: string) => path.relative(process.cwd(), file);
+
+const filterExtensions = (extensions?: string): (file: string) => boolean => {
+  if (!extensions) {
+    return () => true;
+  }
+
+  const regexp = extensions && new RegExp('\.(' + extensions.split(',').join('|') + ')$');
+  return file => !!file.match(regexp);
+};
 
 export const procesor = (args: any) => yargs(args)
   .option('verbose', {
@@ -40,7 +51,8 @@ export const procesor = (args: any) => yargs(args)
     let count = 0;
     const files = await util.promisify(walk)(argv.dir) || [];
     for (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
-      const { lines } = await replace(file);
+      const text = await strip(file);
+      const lines = text.split(os.EOL).length;
       console.log(String(lines).padStart(col), file);
       count += lines;
     }
@@ -61,33 +73,18 @@ export const procesor = (args: any) => yargs(args)
 
     const files = await util.promisify(walk)(argv.dir) || [];
     for (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
-      const tmpFile = '/tmp/strip.txt';
-
-      const writer: WriteStream = argv.replace ? fs.createWriteStream(tmpFile) : process.stdout as unknown as WriteStream;
-      if (!argv.replace) {
-        writer.write(os.EOL + `<<<<<<<< ${file}` + os.EOL);
+      if (argv.verbose) {
+        console.log(`Processing ${file}`);
       }
 
-      const { lines } = await replace(file, writer);
+      const text = await strip(file);
 
-      if (!argv.replace) {
-        writer.write(`>>>>>>>> ${lines}` + os.EOL);
+      if (argv.replace) {
+        fs.writeFileSync(file, text);
       } else {
-        writer.close();
-        fs.renameSync(tmpFile, file);
+        console.log(os.EOL + `<<<<<<<< ${file}` + os.EOL + text + '>>>>>>>>' + os.EOL);
       }
     }
   })
 
   .argv;
-
-const mapRelative = (file: string) => path.relative(process.cwd(), file);
-
-const filterExtensions = (extensions?: string): (file: string) => boolean => {
-  if (!extensions) {
-    return () => true;
-  }
-
-  const regexp = extensions && new RegExp('\.(' + extensions.split(',').join('|') + ')$');
-  return file => !!file.match(regexp);
-};

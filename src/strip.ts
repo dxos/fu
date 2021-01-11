@@ -2,11 +2,11 @@
 // Copyright 2020 DXOS.org
 //
 
-import fs, { WriteStream } from 'fs';
+import fs from 'fs';
 import os from 'os';
-import strip from 'strip-comments';
+import str from 'strip-comments';
 
-export const replace = async (path: string, writer?: WriteStream): Promise<{ lines: number }> => {
+export const strip = async (path: string): Promise<string> => {
   return new Promise(resolve => {
     const data = fs.readFileSync(path, 'utf8');
 
@@ -14,7 +14,7 @@ export const replace = async (path: string, writer?: WriteStream): Promise<{ lin
     let blank = 0;
 
     // https://www.npmjs.com/package/strip-comments
-    const lines = strip(data).split(os.EOL).map(line => {
+    const lines = str(data).split(os.EOL).map(line => {
       if (line.trim().length === 0) {
         blank++;
       } else {
@@ -33,8 +33,7 @@ export const replace = async (path: string, writer?: WriteStream): Promise<{ lin
       }
     }).filter(Boolean);
 
-    writer && writer.write(lines.join(os.EOL) + os.EOL);
-
-    resolve({ lines: lines.length });
+    const text = lines.join(os.EOL) + os.EOL;
+    resolve(text);
   });
 };
