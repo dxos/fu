@@ -72,7 +72,7 @@ export const procesor = (args: any) => yargs(args)
     }
 
     const files = await util.promisify(walk)(argv.dir) || [];
-    for (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
+    for await (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
       if (argv.verbose) {
         console.log(`Processing ${file}`);
       }

@@ -4,6 +4,9 @@
 
 import { procesor } from './main';
 
-test('basics', async () => {
-  await procesor(['strip', '--dir=./testing', '--ext=js', '--verbose']);
+test('basics', (done) => {
+  procesor(['strip', '--dir=./testing', '--ext=js', '--verbose']);
+
+  // TODO(burdon): Fix async processing.
+  setTimeout(done, 1000);
 });
