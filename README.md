@@ -21,5 +21,5 @@ npx @dxos/fu strip --dir=./src --verbose
 ## Testing
 
 ```bash
-yarn fu strip --dir=./testing --ignore=node_modules --verbose
+yarn fu strip --dir="**/testing" --ignore="node_modules" --verbose
 ```
