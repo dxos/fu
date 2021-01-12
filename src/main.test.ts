@@ -20,5 +20,5 @@ test('walk', async () => {
 
 test('strip', async () => {
   const text = await strip('testing/test.js');
-  expect(text.split(os.EOL)).toHaveLength(22);
+  expect(text.split(os.EOL)).toHaveLength(21);
 });
