@@ -36,7 +36,11 @@ export const procesor = (args: any) => yargs(args)
   })
   .option('dir', {
     type: 'string',
-    description: 'Root directory'
+    description: 'Glob pattern for directories'
+  })
+  .option('ignore', {
+    type: 'string',
+    description: 'Regular expression for directories to exclude'
   })
   .option('extensions', {
     alias: 'ext',
@@ -52,7 +56,9 @@ export const procesor = (args: any) => yargs(args)
 
     const col = 8;
     let count = 0;
-    const files = await walk(argv.dir);
+
+    const ignore = argv.ignore ? new RegExp(argv.ignore) : undefined;
+    const files = await walk(argv.dir, ignore);
     for (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
       const text = await strip(file);
       const lines = text.split(os.EOL).length;
@@ -74,7 +80,8 @@ export const procesor = (args: any) => yargs(args)
       return;
     }
 
-    const files = await walk(argv.dir);
+    const ignore = argv.ignore ? new RegExp(argv.ignore) : undefined;
+    const files = await walk(argv.dir, ignore);
     for await (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
       if (argv.verbose) {
         console.log(`Processing ${file}`);

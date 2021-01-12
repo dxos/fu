@@ -7,14 +7,18 @@ import path from 'path';
 import glob from 'glob';
 import util from 'util';
 
-export const walk = async (pattern: string): Promise<string[]> => {
+export const walk = async (pattern: string, ignore?: RegExp): Promise<string[]> => {
   const results = [];
 
   // https://www.npmjs.com/package/glob
   const matches = await util.promisify(glob)(pattern, {});
-  for await (const match of matches) {
-    if (fs.lstatSync(match).isDirectory()) {
-      const files = await util.promisify(walkDir)(match) || [];
+  for await (const file of matches) {
+    if (ignore && file.match(ignore)) {
+      continue;
+    }
+
+    if (fs.lstatSync(file).isDirectory()) {
+      const files = await util.promisify(walkDir)(file) || [];
       results.push(...files);
     }
   }

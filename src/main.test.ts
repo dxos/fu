@@ -13,7 +13,7 @@ test('walk', async () => {
     expect(files.length).toBe(5);
   }
   {
-    const files = await walk('+(src|testing)');
+    const files = await walk('**/+(src|testing)', /node_modules/);
     expect(files.length).toBe(6);
   }
 });
