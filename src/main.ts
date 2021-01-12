@@ -4,7 +4,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import util from 'util';
 import yargs from 'yargs';
 
 import { strip } from './strip';
@@ -31,6 +30,10 @@ export const procesor = (args: any) => yargs(args)
     type: 'boolean',
     description: 'Verbose logging'
   })
+  .option('dry-run', {
+    type: 'boolean',
+    description: 'Do not process command'
+  })
   .option('dir', {
     type: 'string',
     description: 'Root directory'
@@ -49,7 +52,7 @@ export const procesor = (args: any) => yargs(args)
 
     const col = 8;
     let count = 0;
-    const files = await util.promisify(walk)(argv.dir) || [];
+    const files = await walk(argv.dir);
     for (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
       const text = await strip(file);
       const lines = text.split(os.EOL).length;
@@ -71,7 +74,7 @@ export const procesor = (args: any) => yargs(args)
       return;
     }
 
-    const files = await util.promisify(walk)(argv.dir) || [];
+    const files = await walk(argv.dir);
     for await (const file of files.filter(filterExtensions(argv.extensions)).map(mapRelative)) {
       if (argv.verbose) {
         console.log(`Processing ${file}`);
@@ -79,10 +82,12 @@ export const procesor = (args: any) => yargs(args)
 
       const text = await strip(file);
 
-      if (argv.replace) {
-        fs.writeFileSync(file, text);
-      } else {
-        console.log(os.EOL + `<<<<<<<< ${file}` + os.EOL + text + '>>>>>>>>' + os.EOL);
+      if (!argv.dryRun) {
+        if (argv.replace) {
+          fs.writeFileSync(file, text);
+        } else {
+          console.log(os.EOL + '<<<<<<<<' + os.EOL + text + '>>>>>>>>' + os.EOL);
+        }
       }
     }
   })

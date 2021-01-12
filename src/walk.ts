@@ -4,8 +4,25 @@
 
 import fs from 'fs';
 import path from 'path';
+import glob from 'glob';
+import util from 'util';
 
-export const walk = (dir: string, done: (err?: Error, results?: string[]) => void) => {
+export const walk = async (pattern: string): Promise<string[]> => {
+  const results = [];
+
+  // https://www.npmjs.com/package/glob
+  const matches = await util.promisify(glob)(pattern, {});
+  for await (const match of matches) {
+    if (fs.lstatSync(match).isDirectory()) {
+      const files = await util.promisify(walkDir)(match) || [];
+      results.push(...files);
+    }
+  }
+
+  return results;
+};
+
+const walkDir = (dir: string, done: (err?: Error, results?: string[]) => void) => {
   let results: string[] = [];
 
   fs.readdir(dir, (err, list) => {
@@ -26,7 +43,7 @@ export const walk = (dir: string, done: (err?: Error, results?: string[]) => voi
         if (stat && stat.isDirectory()) {
           const parts = file.split('/');
           if (parts[parts.length - 1]) {
-            walk(file, (_, res = []) => {
+            walkDir(file, (_, res = []) => {
               // Flatten.
               results = results.concat([...res]);
               next();

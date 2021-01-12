@@ -2,11 +2,23 @@
 // Copyright 2020 DXOS.org
 //
 
-import { procesor } from './main';
+import os from 'os';
 
-test('basics', (done) => {
-  procesor(['strip', '--dir=./testing', '--ext=js', '--verbose']);
+import { walk } from './walk';
+import { strip } from './strip';
 
-  // TODO(burdon): Fix async processing.
-  setTimeout(done, 1000);
+test('walk', async () => {
+  {
+    const files = await walk('src/**');
+    expect(files.length).toBe(5);
+  }
+  {
+    const files = await walk('+(src|testing)');
+    expect(files.length).toBe(6);
+  }
+});
+
+test('strip', async () => {
+  const text = await strip('testing/test.js');
+  expect(text.split(os.EOL)).toHaveLength(22);
 });
