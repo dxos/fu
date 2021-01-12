@@ -1,6 +1,6 @@
 {
   "name": "@dxos/fu",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "File utils.",
   "license": "AGPL-3.0",
   "bin": {
